@@ -18,7 +18,12 @@ export function ReservationSection() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [reservationType, setReservationType] =
     useState<ReservationType>("regular");
-  const [selectedDate, setSelectedDate] = useState("");
+  // Set initial date to today
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+  const [selectedDate, setSelectedDate] = useState(getTodayDate());
   // Mock data: Dates that are fully booked (format: YYYY-MM-DD)
   const bookedDates = [
     "2025-01-25",
@@ -36,6 +41,15 @@ export function ReservationSection() {
   };
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(e.target.value);
+  };
+
+  const handleDateClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    try {
+      (e.target as HTMLInputElement).showPicker?.();
+    } catch (error) {
+      // Fallback for browsers that don't support showPicker
+      console.log("showPicker not supported");
+    }
   };
 
   const isDateAvailable = selectedDate
@@ -213,7 +227,9 @@ export function ReservationSection() {
                       min={today}
                       value={selectedDate}
                       onChange={handleDateChange}
-                      className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light placeholder-white/20 [color-scheme:dark]"
+                      onClick={handleDateClick}
+                      className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light placeholder-white/20 [color-scheme:dark] cursor-pointer"
+                      style={{ colorScheme: "dark" }}
                     />
 
                     {/* Availability Indicator */}

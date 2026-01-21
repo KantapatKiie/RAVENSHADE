@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Wine, Utensils } from "lucide-react";
+import { Footer } from "../components/Footer";
 
 type MenuCategory = "cocktails" | "food";
 
@@ -205,13 +206,7 @@ export function MenuPage() {
           </div>
         )}
       </div>
-
-      {/* Footer */}
-      <footer className="w-full bg-neutral-950 py-12 border-t border-neutral-900 text-center">
-        <p className="text-neutral-500 text-xs tracking-[0.2em] uppercase">
-          © {new Date().getFullYear()} Ravenshade Thonglor. All rights reserved.
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }
