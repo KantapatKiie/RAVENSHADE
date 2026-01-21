@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Calendar,
   Clock,
@@ -11,6 +11,7 @@ import {
   AlertCircle,
   CheckCircle,
 } from "lucide-react";
+import { api } from "../services/api";
 
 type ReservationType = "regular" | "group" | "private";
 export function ReservationSection() {
@@ -18,27 +19,65 @@ export function ReservationSection() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [reservationType, setReservationType] =
     useState<ReservationType>("regular");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [isDateAvailable, setIsDateAvailable] = useState<boolean | null>(null);
+  const [isCheckingDate, setIsCheckingDate] = useState(false);
+  const [blockedBy, setBlockedBy] = useState<"private" | "group" | null>(null);
+  const [availabilityNotes, setAvailabilityNotes] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    time: "19:00:00",
+    guests: "4",
+    specialRequests: "",
+  });
+
+  // Update guest count when reservation type changes
+  useEffect(() => {
+    if (reservationType === "regular") {
+      setFormData(prev => ({ ...prev, guests: "4" }));
+    } else if (reservationType === "group") {
+      setFormData(prev => ({ ...prev, guests: "10" }));
+    } else if (reservationType === "private") {
+      setFormData(prev => ({ ...prev, guests: "45" }));
+    }
+  }, [reservationType]);
+
   // Set initial date to today
   const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split("T")[0];
   };
-  const [selectedDate, setSelectedDate] = useState(getTodayDate());
-  // Mock data: Dates that are fully booked (format: YYYY-MM-DD)
-  const bookedDates = [
-    "2025-01-25",
-    "2025-01-26",
-    "2025-02-01",
-    "2025-02-14",
-    "2025-02-15",
-    "2025-02-28",
-    "2025-03-08",
-    "2025-03-15",
-  ];
 
-  const checkDateAvailability = (date: string): boolean => {
-    return !bookedDates.includes(date);
+  useEffect(() => {
+    setSelectedDate(getTodayDate());
+  }, []);
+
+  // Check availability when date changes
+  useEffect(() => {
+    if (selectedDate) {
+      checkDateAvailability(selectedDate);
+    }
+  }, [selectedDate]);
+
+  const checkDateAvailability = async (date: string) => {
+    setIsCheckingDate(true);
+    try {
+      const result = await api.checkAvailability(date);
+      setIsDateAvailable(result.available && !result.is_closed);
+      setBlockedBy(result.blocked_by || null);
+      setAvailabilityNotes(result.notes || null);
+    } catch (error) {
+      console.error("Error checking availability:", error);
+      setIsDateAvailable(null);
+      setBlockedBy(null);
+      setAvailabilityNotes(null);
+    } finally {
+      setIsCheckingDate(false);
+    }
   };
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(e.target.value);
   };
@@ -47,27 +86,63 @@ export function ReservationSection() {
     try {
       (e.target as HTMLInputElement).showPicker?.();
     } catch (error) {
-      // Fallback for browsers that don't support showPicker
       console.log("showPicker not supported");
     }
   };
 
-  const isDateAvailable = selectedDate
-    ? checkDateAvailability(selectedDate)
-    : null;
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Check if date is available before submitting
-    if (selectedDate && !checkDateAvailability(selectedDate)) {
-      alert("Sorry, this date is fully booked. Please select another date.");
+
+    if (!isDateAvailable) {
+      alert("Sorry, this date is not available. Please select another date.");
       return;
     }
+
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+    try {
+      // Clean phone number - remove all non-digit characters
+      const cleanedPhone = formData.phone.replace(/\D/g, '');
+      
+      // Validate phone number (9-11 digits)
+      if (cleanedPhone.length < 9 || cleanedPhone.length > 11) {
+        alert("Please enter a valid phone number (9-11 digits)");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const reservationData = {
+        name: formData.name,
+        phone: cleanedPhone,
+        email: formData.email || undefined,
+        reservation_date: selectedDate,
+        reservation_time: formData.time,
+        number_of_guests: parseInt(formData.guests),
+        reservation_type: reservationType,
+        special_requests: formData.specialRequests || undefined,
+      };
+
+      await api.createReservation(reservationData);
       setIsSuccess(true);
-    }, 1500);
+      // Reset form
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        time: "19:00:00",
+        guests: "4",
+        specialRequests: "",
+      });
+    } catch (error) {
+      console.error("Error creating reservation:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to create reservation. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   const reservationTypes = [
     {
@@ -90,8 +165,6 @@ export function ReservationSection() {
     },
   ];
 
-  // Get today's date in YYYY-MM-DD format for min attribute
-  const today = new Date().toISOString().split("T")[0];
   return (
     <section className="relative min-h-screen w-full flex items-center justify-center py-20 overflow-hidden bg-neutral-950">
       {/* Background Texture */}
@@ -198,6 +271,10 @@ export function ReservationSection() {
                     <input
                       type="text"
                       required
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light placeholder-white/20"
                       placeholder="Your Name"
                     />
@@ -211,8 +288,34 @@ export function ReservationSection() {
                     <input
                       type="tel"
                       required
+                      value={formData.phone}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Only allow numbers and limit to 11 digits
+                        if (/^\d*$/.test(value) && value.length <= 11) {
+                          setFormData({ ...formData, phone: value });
+                        }
+                      }}
                       className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light placeholder-white/20"
-                      placeholder="08X-XXX-XXXX"
+                      placeholder="0012345678"
+                      maxLength={11}
+                      pattern="\d*"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div className="space-y-2 group md:col-span-2">
+                    <label className="flex items-center text-xs text-amber-100/60 uppercase tracking-widest group-focus-within:text-amber-400 transition-colors">
+                      <User className="w-3 h-3 mr-2" /> Email (Optional)
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light placeholder-white/20"
+                      placeholder="your.email@example.com"
                     />
                   </div>
 
@@ -224,7 +327,7 @@ export function ReservationSection() {
                     <input
                       type="date"
                       required
-                      min={today}
+                      min={getTodayDate()}
                       value={selectedDate}
                       onChange={handleDateChange}
                       onClick={handleDateClick}
@@ -233,68 +336,53 @@ export function ReservationSection() {
                     />
 
                     {/* Availability Indicator */}
-                    {selectedDate && (
-                      <div
-                        className={`mt-3 p-3 rounded-sm border flex items-center gap-3 ${isDateAvailable ? "bg-emerald-500/10 border-emerald-500/30" : "bg-red-500/10 border-red-500/30"}`}
-                      >
-                        {isDateAvailable ? (
-                          <>
-                            <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                            <div>
-                              <p className="text-emerald-400 text-sm font-medium">
-                                Available
-                              </p>
-                              <p className="text-emerald-300/70 text-xs">
-                                This date is available for booking
-                              </p>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                            <div>
-                              <p className="text-red-400 text-sm font-medium">
-                                Fully Booked
-                              </p>
-                              <p className="text-red-300/70 text-xs">
-                                This date is not available. Please select
-                                another date.
-                              </p>
-                            </div>
-                          </>
-                        )}
+                    {selectedDate &&
+                      !isCheckingDate &&
+                      isDateAvailable !== null && (
+                        <div
+                          className={`mt-3 p-3 rounded-sm border flex items-center gap-3 ${isDateAvailable ? "bg-emerald-500/10 border-emerald-500/30" : "bg-red-500/10 border-red-500/30"}`}
+                        >
+                          {isDateAvailable ? (
+                            <>
+                              <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                              <div>
+                                <p className="text-emerald-400 text-sm font-medium">
+                                  Available
+                                </p>
+                                <p className="text-emerald-300/70 text-xs">
+                                  This date is available for booking
+                                </p>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                              <div>
+                                <p className="text-red-400 text-sm font-medium">
+                                  Not Available
+                                </p>
+                                <p className="text-red-300/70 text-xs">
+                                  {blockedBy === "private" &&
+                                    "วันนี้ถูกจองเป็นงานปิดร้านแล้ว (This date is fully booked for a private event)"}
+                                  {blockedBy === "group" &&
+                                    "วันนี้ถูกจองเป็นกรุ๊ปแล้ว (This date is booked for a group reservation)"}
+                                  {!blockedBy &&
+                                    "This date is not available. Please select another date."}
+                                </p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )}
+
+                    {isCheckingDate && (
+                      <div className="mt-3 p-3 rounded-sm border border-amber-500/30 bg-amber-500/5 flex items-center gap-3">
+                        <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                        <p className="text-amber-400 text-sm">
+                          Checking availability...
+                        </p>
                       </div>
                     )}
-
-                    {/* Booked Dates Info */}
-                    <div className="mt-4 p-3 bg-black/20 border border-amber-500/10 rounded-sm">
-                      <p className="text-xs text-neutral-400 font-light mb-2">
-                        <span className="text-amber-400">
-                          Upcoming Fully Booked Dates:
-                        </span>
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {bookedDates.slice(0, 6).map((date) => {
-                          const dateObj = new Date(date + "T00:00:00");
-                          const formattedDate = dateObj.toLocaleDateString(
-                            "th-TH",
-                            {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            },
-                          );
-                          return (
-                            <span
-                              key={date}
-                              className="text-xs px-2 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded"
-                            >
-                              {formattedDate}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
                   </div>
 
                   {/* Time & Guests Row */}
@@ -303,13 +391,31 @@ export function ReservationSection() {
                       <label className="flex items-center text-xs text-amber-100/60 uppercase tracking-widest group-focus-within:text-amber-400 transition-colors">
                         <Clock className="w-3 h-3 mr-2" /> Time
                       </label>
-                      <select className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light appearance-none">
-                        <option className="bg-neutral-900">18:00</option>
-                        <option className="bg-neutral-900">19:00</option>
-                        <option className="bg-neutral-900">20:00</option>
-                        <option className="bg-neutral-900">21:00</option>
-                        <option className="bg-neutral-900">22:00</option>
-                        <option className="bg-neutral-900">23:00</option>
+                      <select
+                        value={formData.time}
+                        onChange={(e) =>
+                          setFormData({ ...formData, time: e.target.value })
+                        }
+                        className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light appearance-none"
+                      >
+                        <option className="bg-neutral-900" value="18:00:00">
+                          18:00
+                        </option>
+                        <option className="bg-neutral-900" value="19:00:00">
+                          19:00
+                        </option>
+                        <option className="bg-neutral-900" value="20:00:00">
+                          20:00
+                        </option>
+                        <option className="bg-neutral-900" value="21:00:00">
+                          21:00
+                        </option>
+                        <option className="bg-neutral-900" value="22:00:00">
+                          22:00
+                        </option>
+                        <option className="bg-neutral-900" value="23:00:00">
+                          23:00
+                        </option>
                       </select>
                     </div>
 
@@ -317,50 +423,72 @@ export function ReservationSection() {
                       <label className="flex items-center text-xs text-amber-100/60 uppercase tracking-widest group-focus-within:text-amber-400 transition-colors">
                         <Users className="w-3 h-3 mr-2" /> Guests
                       </label>
-                      <select className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light appearance-none">
+                      <select
+                        value={formData.guests}
+                        onChange={(e) =>
+                          setFormData({ ...formData, guests: e.target.value })
+                        }
+                        className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light appearance-none"
+                      >
                         {reservationType === "regular" && (
                           <>
-                            <option className="bg-neutral-900">1 Person</option>
-                            <option className="bg-neutral-900">2 People</option>
-                            <option className="bg-neutral-900">3 People</option>
-                            <option className="bg-neutral-900">4 People</option>
-                            <option className="bg-neutral-900">5 People</option>
-                            <option className="bg-neutral-900">6 People</option>
-                            <option className="bg-neutral-900">7 People</option>
-                            <option className="bg-neutral-900">8 People</option>
+                            <option className="bg-neutral-900" value="1">
+                              1 Person
+                            </option>
+                            <option className="bg-neutral-900" value="2">
+                              2 People
+                            </option>
+                            <option className="bg-neutral-900" value="3">
+                              3 People
+                            </option>
+                            <option className="bg-neutral-900" value="4">
+                              4 People
+                            </option>
+                            <option className="bg-neutral-900" value="5">
+                              5 People
+                            </option>
+                            <option className="bg-neutral-900" value="6">
+                              6 People
+                            </option>
+                            <option className="bg-neutral-900" value="7">
+                              7 People
+                            </option>
+                            <option className="bg-neutral-900" value="8">
+                              8 People
+                            </option>
                           </>
                         )}
                         {reservationType === "group" && (
                           <>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="10">
                               8-10 People
                             </option>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="15">
                               11-15 People
                             </option>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="20">
                               16-20 People
                             </option>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="30">
                               21-30 People
                             </option>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="40">
                               31-40 People
                             </option>
                           </>
                         )}
                         {reservationType === "private" && (
                           <>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="45">
                               40-45 People
                             </option>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="50">
                               46-50 People
                             </option>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="55">
                               51-55 People
                             </option>
-                            <option className="bg-neutral-900">
+                            <option className="bg-neutral-900" value="60">
                               56-60 People
                             </option>
                           </>
@@ -424,6 +552,13 @@ export function ReservationSection() {
                   </label>
                   <textarea
                     rows={reservationType === "private" ? 4 : 3}
+                    value={formData.specialRequests}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        specialRequests: e.target.value,
+                      })
+                    }
                     className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light placeholder-white/20 resize-none"
                     placeholder={
                       reservationType === "private"
