@@ -139,7 +139,12 @@ export function AboutPage() {
                 <p className="text-amber-400/80 text-sm uppercase tracking-wider mb-1">
                   Phone
                 </p>
-                <p className="text-lg">+66 94 896 5465</p>
+                <a
+                  href="tel:+66948965465"
+                  className="hover:text-amber-400 transition-colors"
+                >
+                  <p className="text-lg">+66 94 896 5465</p>
+                </a>
               </div>
             </div>
           </div>
