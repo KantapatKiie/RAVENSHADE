@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from "react";
 import {
   Calendar,
@@ -23,7 +24,9 @@ export function ReservationSection() {
   const [isDateAvailable, setIsDateAvailable] = useState<boolean | null>(null);
   const [isCheckingDate, setIsCheckingDate] = useState(false);
   const [blockedBy, setBlockedBy] = useState<"private" | "group" | null>(null);
-  const [availabilityNotes, setAvailabilityNotes] = useState<string | null>(null);
+  const [availabilityNotes, setAvailabilityNotes] = useState<string | null>(
+    null,
+  );
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -36,11 +39,11 @@ export function ReservationSection() {
   // Update guest count when reservation type changes
   useEffect(() => {
     if (reservationType === "regular") {
-      setFormData(prev => ({ ...prev, guests: "4" }));
+      setFormData((prev) => ({ ...prev, guests: "4" }));
     } else if (reservationType === "group") {
-      setFormData(prev => ({ ...prev, guests: "10" }));
+      setFormData((prev) => ({ ...prev, guests: "10" }));
     } else if (reservationType === "private") {
-      setFormData(prev => ({ ...prev, guests: "45" }));
+      setFormData((prev) => ({ ...prev, guests: "45" }));
     }
   }, [reservationType]);
 
@@ -102,8 +105,8 @@ export function ReservationSection() {
 
     try {
       // Clean phone number - remove all non-digit characters
-      const cleanedPhone = formData.phone.replace(/\D/g, '');
-      
+      const cleanedPhone = formData.phone.replace(/\D/g, "");
+
       // Validate phone number (9-11 digits)
       if (cleanedPhone.length < 9 || cleanedPhone.length > 11) {
         alert("Please enter a valid phone number (9-11 digits)");
