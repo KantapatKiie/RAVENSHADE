@@ -122,11 +122,18 @@ export function AboutPage() {
                 <p className="text-amber-400/80 text-sm uppercase tracking-wider mb-1">
                   Location
                 </p>
-                <p className="text-lg">
-                  714/6-7 Sukhumvit Rd, Klongtan
-                  <br />
-                  Klongtei, Bangkok 10110
-                </p>
+                <a
+                  href="https://www.google.com/maps?sca_esv=cc34ee859529854e&rlz=1C5CHFA_enTH1182TH1182&output=search&q=oxalis+bar&source=lnms&fbs=ADc_l-a5L-oxxunx5BQU92zbhUnmksqua1A-f08QnDrgMZy0s_yAFoB7a283VuWwXT6YphPDm52vPoyplbEhE-vCVD0Mw5y7HXbrua_DrXLknYUsyXz5TzkEQwfdqPyPPl42oWfIi67J6dvJYQqT793AWSg6D5o8YjL5JsNsgI6X9IjbkGivW6SjYLTtoXG7taIunf8XyBw6T8MoOEzg4RLO3Mp03dT1W3d1t6wQQ7SZB-UIfsoyPwAUhU1jfb9d-Y8k3kUJWN-pXOHz6K6qSGZk4jzZfddn6kRNGvGSkf-9xz0bb5kzii4&entry=mc&ved=1t:200715&ictx=111"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber-400 hover:underline text-white"
+                >
+                  <p className="text-lg">
+                    714/6-7 Sukhumvit Rd, Klongtan
+                    <br />
+                    Klongtei, Bangkok 10110
+                  </p>
+                </a>
               </div>
               <div>
                 <p className="text-amber-400/80 text-sm uppercase tracking-wider mb-1">
