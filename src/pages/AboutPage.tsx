@@ -55,7 +55,7 @@ export function AboutPage() {
             </div>
           </div>
           <div className="relative">
-            <div className="aspect-[4/5] overflow-hidden rounded-sm border border-amber-500/20">
+            <div className="overflow-hidden rounded-sm border border-amber-500/20">
               <img
                 src={frontMain}
                 alt="Ravenshade Interior"
