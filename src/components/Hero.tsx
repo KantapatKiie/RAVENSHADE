@@ -1,5 +1,4 @@
-import React from 'react';
-import { Wine } from 'lucide-react';
+import { Wine } from "lucide-react";
 export function Hero() {
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -8,11 +7,12 @@ export function Hero() {
         <img
           src="/1_0.png"
           alt="Ravenshade Interior"
-          className="h-full w-full object-cover object-center" />
+          className="h-full w-full object-cover object-center"
+        />
 
-        {/* Dark overlay to mute the background and burned-in text */}
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80"></div>
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70"></div>
       </div>
 
       {/* Content */}
@@ -20,8 +20,8 @@ export function Hero() {
         <div className="mb-6 animate-fade-in opacity-90">
           <Wine
             className="h-16 w-16 text-amber-400 mx-auto mb-4 opacity-90"
-            strokeWidth={1} />
-
+            strokeWidth={1}
+          />
         </div>
 
         <h1 className="mb-2 text-5xl font-bold tracking-widest text-white sm:text-7xl md:text-8xl lg:text-9xl">
@@ -35,8 +35,8 @@ export function Hero() {
         {/* CTA Button */}
         <a
           href="#/reserve"
-          className="group relative px-8 py-4 bg-transparent overflow-hidden border border-amber-500/50 hover:border-amber-400 transition-colors duration-300 mt-8">
-
+          className="group relative px-8 py-4 bg-transparent overflow-hidden border border-amber-500/50 hover:border-amber-400 transition-colors duration-300 mt-8"
+        >
           <div className="absolute inset-0 w-0 bg-amber-500/20 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
           <span className="relative text-amber-400 group-hover:text-amber-200 tracking-[0.2em] uppercase text-sm font-medium">
             จองโต๊ะ / Reserve Table
@@ -55,6 +55,6 @@ export function Hero() {
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
         <div className="h-12 w-px bg-gradient-to-b from-transparent via-amber-400 to-transparent"></div>
       </div>
-    </section>);
-
+    </section>
+  );
 }

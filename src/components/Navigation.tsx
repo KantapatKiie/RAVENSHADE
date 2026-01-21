@@ -27,6 +27,12 @@ export function Navigation({ currentPage }: NavigationProps) {
             Home
           </a>
           <a
+            href="#/about"
+            className={`text-sm tracking-[0.2em] uppercase transition-all duration-300 hover:text-amber-400 ${currentPage === 'about' ? 'text-amber-400 border-b border-amber-400 pb-1' : 'text-neutral-400'}`}>
+
+            About
+          </a>
+          <a
             href="#/menu"
             className={`text-sm tracking-[0.2em] uppercase transition-all duration-300 hover:text-amber-400 ${currentPage === 'menu' ? 'text-amber-400 border-b border-amber-400 pb-1' : 'text-neutral-400'}`}>
 

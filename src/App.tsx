@@ -3,6 +3,7 @@ import { Navigation } from "./components/Navigation";
 import { MainPage } from "./pages/MainPage";
 import { ReservePage } from "./pages/ReservePage";
 import { MenuPage } from "./pages/MenuPage";
+import { AboutPage } from "./pages/AboutPage";
 
 export function App() {
   const [currentPage, setCurrentPage] = useState("main");
@@ -14,6 +15,9 @@ export function App() {
         window.scrollTo(0, 0);
       } else if (hash === "#/menu") {
         setCurrentPage("menu");
+        window.scrollTo(0, 0);
+      } else if (hash === "#/about") {
+        setCurrentPage("about");
         window.scrollTo(0, 0);
       } else {
         setCurrentPage("main");
@@ -33,6 +37,7 @@ export function App() {
       {currentPage === "main" && <MainPage />}
       {currentPage === "menu" && <MenuPage />}
       {currentPage === "reserve" && <ReservePage />}
+      {currentPage === "about" && <AboutPage />}
     </main>
   );
 }
