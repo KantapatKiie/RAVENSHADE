@@ -34,6 +34,14 @@ export function Footer() {
               </li>
               <li>
                 <a
+                  href="#/about"
+                  className="text-neutral-400 text-sm hover:text-amber-400 transition-colors"
+                >
+                  About
+                </a>
+              </li>
+              <li>
+                <a
                   href="#/menu"
                   className="text-neutral-400 text-sm hover:text-amber-400 transition-colors"
                 >
@@ -65,16 +73,16 @@ export function Footer() {
                   rel="noreferrer"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  123 Thonglor Soi 10, Bangkok 10110
+                  714/6-7 Sukhumvit Rd, Klongtan, Klongtei, Bangkok 10110
                 </a>
               </li>
               <li className="flex items-center gap-2 text-neutral-400 text-sm">
                 <Phone className="h-4 w-4 flex-shrink-0 text-amber-400" />
                 <a
-                  href="tel:+66826954956"
+                  href="tel:+66948965465"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  +66 82-695-4956
+                  +66 94 896 5465
                 </a>
               </li>
               <li className="flex items-center gap-2 text-neutral-400 text-sm">
@@ -95,9 +103,11 @@ export function Footer() {
               Hours
             </h3>
             <p className="text-neutral-400 text-sm mb-4">
-              Mon - Sun
+              Tuesday - Sunday
               <br />
-              6:00 PM - 2:00 AM
+              3:00 PM - 11:00 PM
+              <br />
+              <span className="text-red-400">Monday: Closed</span>
             </p>
             <div className="flex gap-3">
               <a
