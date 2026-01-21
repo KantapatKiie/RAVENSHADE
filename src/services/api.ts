@@ -61,4 +61,54 @@ export const api = {
     if (!response.ok) throw new Error("Failed to get time slots");
     return response.json();
   },
+
+  // Admin APIs
+  async getAdminReservations() {
+    const response = await fetch(`${API_URL}/api/admin/reservations`);
+    if (!response.ok) throw new Error("Failed to fetch reservations");
+    return response.json();
+  },
+
+  async updateReservationStatus(id: number, status: "confirmed" | "cancelled") {
+    const response = await fetch(`${API_URL}/api/admin/reservations/${id}/status`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    });
+    if (!response.ok) throw new Error("Failed to update reservation");
+    return response.json();
+  },
+
+  async getAdminAvailability() {
+    const response = await fetch(`${API_URL}/api/admin/availability`);
+    if (!response.ok) throw new Error("Failed to fetch availability");
+    return response.json();
+  },
+
+  async setAvailability(data: {
+    date: string;
+    is_closed: boolean;
+    blocked_by?: "private" | "group";
+    notes?: string;
+  }) {
+    const response = await fetch(`${API_URL}/api/admin/availability`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error("Failed to set availability");
+    return response.json();
+  },
+
+  async deleteAvailability(id: number) {
+    const response = await fetch(`${API_URL}/api/admin/availability/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Failed to delete availability");
+    return response.json();
+  },
 };

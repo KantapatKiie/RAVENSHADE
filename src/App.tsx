@@ -4,6 +4,7 @@ import { MainPage } from "./pages/MainPage";
 import { ReservePage } from "./pages/ReservePage";
 import { MenuPage } from "./pages/MenuPage";
 import { AboutPage } from "./pages/AboutPage";
+import { AdminPage } from "./pages/AdminPage";
 
 export function App() {
   const [currentPage, setCurrentPage] = useState("main");
@@ -19,6 +20,9 @@ export function App() {
       } else if (hash === "#/about") {
         setCurrentPage("about");
         window.scrollTo(0, 0);
+      } else if (hash === "#/auth/admin") {
+        setCurrentPage("admin");
+        window.scrollTo(0, 0);
       } else {
         setCurrentPage("main");
         window.scrollTo(0, 0);
@@ -32,12 +36,13 @@ export function App() {
   }, []);
   return (
     <main className="min-h-screen w-full bg-neutral-950 text-white selection:bg-amber-500/30 selection:text-amber-100">
-      <Navigation currentPage={currentPage} />
+      {currentPage !== "admin" && <Navigation currentPage={currentPage} />}
 
       {currentPage === "main" && <MainPage />}
       {currentPage === "menu" && <MenuPage />}
       {currentPage === "reserve" && <ReservePage />}
       {currentPage === "about" && <AboutPage />}
+      {currentPage === "admin" && <AdminPage />}
     </main>
   );
 }
