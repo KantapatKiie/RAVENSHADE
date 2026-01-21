@@ -1,6 +1,5 @@
 import { Footer } from "../components/Footer";
 import frontMain from "../assets/front_main.png";
-import frontMainDetail from "../assets/front_main_detail.png";
 
 export function AboutPage() {
   return (
@@ -58,7 +57,7 @@ export function AboutPage() {
           <div className="relative">
             <div className="aspect-[4/5] overflow-hidden rounded-sm border border-amber-500/20">
               <img
-                src={frontMainDetail}
+                src={frontMain}
                 alt="Ravenshade Interior"
                 className="w-full h-full object-cover"
               />

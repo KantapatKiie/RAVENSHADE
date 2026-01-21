@@ -32,3 +32,67 @@
 .text-gold-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500;
 }
+
+/* React DatePicker Customization */
+.react-datepicker-wrapper {
+  @apply w-full;
+}
+
+.react-datepicker {
+  @apply bg-neutral-900 border border-amber-500/30 rounded-sm font-light;
+}
+
+.react-datepicker__header {
+  @apply bg-neutral-800/50 border-b border-amber-500/30 rounded-t-sm;
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header {
+  @apply text-amber-400 font-normal text-base;
+}
+
+.react-datepicker__navigation {
+  @apply top-3;
+}
+
+.react-datepicker__navigation-icon::before {
+  @apply border-amber-400;
+}
+
+.react-datepicker__navigation:hover *::before {
+  @apply border-amber-300;
+}
+
+.react-datepicker__day-name {
+  @apply text-amber-400/60 text-xs w-9 leading-9;
+}
+
+.react-datepicker__day {
+  @apply text-white hover:bg-amber-500/20 rounded-sm w-9 leading-9 transition-colors;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  @apply bg-amber-500 text-neutral-950 font-medium hover:bg-amber-400;
+}
+
+.react-datepicker__day--today {
+  @apply bg-amber-500/10 text-amber-400 font-normal;
+}
+
+.react-datepicker__day--disabled {
+  @apply text-red-400/40 bg-red-950/20 hover:bg-red-950/20 cursor-not-allowed line-through decoration-red-500/50;
+}
+
+.react-datepicker__day--outside-month {
+  @apply text-neutral-600;
+}
+
+.react-datepicker__day:hover {
+  @apply bg-amber-500/10;
+}
+
+.react-datepicker__triangle {
+  @apply hidden;
+}

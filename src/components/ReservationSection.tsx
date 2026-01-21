@@ -1,5 +1,7 @@
 /* eslint-disable */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   Calendar,
   Clock,
@@ -27,6 +29,9 @@ export function ReservationSection() {
   const [availabilityNotes, setAvailabilityNotes] = useState<string | null>(
     null,
   );
+  const [unavailableDates, setUnavailableDates] = useState<Set<string>>(
+    new Set(),
+  );
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -50,12 +55,11 @@ export function ReservationSection() {
   // Set initial date to today
   const getTodayDate = () => {
     const today = new Date();
-    return today.toISOString().split("T")[0];
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
-
-  useEffect(() => {
-    setSelectedDate(getTodayDate());
-  }, []);
 
   // Check availability when date changes
   useEffect(() => {
@@ -68,9 +72,21 @@ export function ReservationSection() {
     setIsCheckingDate(true);
     try {
       const result = await api.checkAvailability(date);
-      setIsDateAvailable(result.available && !result.is_closed);
+      const isAvailable = result.available && !result.is_closed;
+      setIsDateAvailable(isAvailable);
       setBlockedBy(result.blocked_by || null);
       setAvailabilityNotes(result.notes || null);
+
+      // Update unavailable dates cache
+      if (!isAvailable) {
+        setUnavailableDates((prev) => new Set(prev).add(date));
+      } else {
+        setUnavailableDates((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(date);
+          return newSet;
+        });
+      }
     } catch (error) {
       console.error("Error checking availability:", error);
       setIsDateAvailable(null);
@@ -81,16 +97,80 @@ export function ReservationSection() {
     }
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(e.target.value);
+  // Check if a date should be disabled in the calendar
+  const isDateDisabled = (date: Date): boolean => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    return unavailableDates.has(dateString);
   };
 
-  const handleDateClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    try {
-      (e.target as HTMLInputElement).showPicker?.();
-    } catch (error) {
-      console.log("showPicker not supported");
+  // Preload availability for visible month
+  const handleMonthChange = useCallback(async (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    // Check availability for all days in the month
+    const checkPromises = [];
+    for (let day = 1; day <= daysInMonth; day++) {
+      const checkDate = new Date(year, month, day);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      checkDate.setHours(0, 0, 0, 0);
+      
+      // Only check future dates
+      if (checkDate >= today) {
+        const dateYear = checkDate.getFullYear();
+        const dateMonth = String(checkDate.getMonth() + 1).padStart(2, '0');
+        const dateDay = String(checkDate.getDate()).padStart(2, '0');
+        const dateString = `${dateYear}-${dateMonth}-${dateDay}`;
+        checkPromises.push(
+          api.checkAvailability(dateString).then((result) => ({
+            date: dateString,
+            available: result.available && !result.is_closed,
+          })),
+        );
+      }
     }
+
+    try {
+      const results = await Promise.all(checkPromises);
+      setUnavailableDates((prevDates) => {
+        const newUnavailableDates = new Set(prevDates);
+        results.forEach((result) => {
+          if (!result.available) {
+            newUnavailableDates.add(result.date);
+          }
+        });
+        return newUnavailableDates;
+      });
+    } catch (error) {
+      console.error("Error preloading month availability:", error);
+    }
+  }, []);
+
+  // Initialize selected date and preload month on mount
+  useEffect(() => {
+    const initDate = getTodayDate();
+    setSelectedDate(initDate);
+    handleMonthChange(new Date());
+  }, [handleMonthChange]);
+
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      setSelectedDate(formattedDate);
+    }
+  };
+
+  const getDateFromString = (dateString: string): Date | null => {
+    if (!dateString) return null;
+    return new Date(dateString + "T00:00:00");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -327,15 +407,16 @@ export function ReservationSection() {
                     <label className="flex items-center text-xs text-amber-100/60 uppercase tracking-widest group-focus-within:text-amber-400 transition-colors">
                       <Calendar className="w-3 h-3 mr-2" /> Date
                     </label>
-                    <input
-                      type="date"
-                      required
-                      min={getTodayDate()}
-                      value={selectedDate}
+                    <DatePicker
+                      selected={getDateFromString(selectedDate)}
                       onChange={handleDateChange}
-                      onClick={handleDateClick}
-                      className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light placeholder-white/20 [color-scheme:dark] cursor-pointer"
-                      style={{ colorScheme: "dark" }}
+                      minDate={new Date()}
+                      dateFormat="yyyy-MM-dd"
+                      filterDate={(date) => !isDateDisabled(date)}
+                      onMonthChange={handleMonthChange}
+                      className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light placeholder-white/20 cursor-pointer"
+                      wrapperClassName="w-full"
+                      calendarClassName="bg-neutral-900 border border-amber-500/30"
                     />
 
                     {/* Availability Indicator */}
