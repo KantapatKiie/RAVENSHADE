@@ -1,5 +1,5 @@
-import React from 'react';
-import { Wine } from 'lucide-react';
+import { Wine } from "lucide-react";
+
 export function CapacitySection() {
   return (
     <section className="relative min-h-screen w-full flex items-center justify-center py-20 overflow-hidden">
@@ -8,7 +8,8 @@ export function CapacitySection() {
         <img
           src="/1-1_0.png"
           alt="Venue Capacity"
-          className="h-full w-full object-cover" />
+          className="h-full w-full object-cover"
+        />
 
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
       </div>
@@ -39,7 +40,7 @@ export function CapacitySection() {
                 Private Event Capacity
               </h3>
               <p className="text-3xl md:text-4xl font-serif text-white">
-                60 Persons
+                15 - 60 Persons
               </p>
             </div>
           </div>
@@ -60,7 +61,13 @@ export function CapacitySection() {
                 สอบถามรายละเอียดเพิ่มเติม
               </p>
               <p className="text-xl text-white tracking-wide">
-                K.รัก 082-695-4956
+                K.Rid (ริท){" "}
+                <a
+                  className="underline hover:text-amber-400"
+                  href="tel:082-695-4956"
+                >
+                  082-695-4956
+                </a>
               </p>
             </div>
           </div>
@@ -69,13 +76,13 @@ export function CapacitySection() {
           <div className="mt-10">
             <a
               href="https://www.facebook.com/ravenshade.thonglor"
-              className="text-xs md:text-sm text-amber-500/70 hover:text-amber-400 tracking-[0.2em] uppercase transition-colors border-b border-transparent hover:border-amber-400">
-
+              className="text-xs md:text-sm text-amber-500/70 hover:text-amber-400 tracking-[0.2em] uppercase transition-colors border-b border-transparent hover:border-amber-400"
+            >
               facebook.com/ravenshade.thonglor
             </a>
           </div>
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 }

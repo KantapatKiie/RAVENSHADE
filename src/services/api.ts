@@ -17,7 +17,7 @@ export interface AvailabilityResponse {
   available_capacity: number;
   total_capacity: number;
   is_closed: boolean;
-  blocked_by?: "private" | "group";
+  blocked_by?: "private" | "group" | "closed";
   notes?: string;
 }
 
@@ -90,7 +90,7 @@ export const api = {
   async setAvailability(data: {
     date: string;
     is_closed: boolean;
-    blocked_by?: "private" | "group";
+    blocked_by?: "private" | "group" | "closed";
     notes?: string;
   }) {
     const response = await fetch(`${API_URL}/api/admin/availability`, {

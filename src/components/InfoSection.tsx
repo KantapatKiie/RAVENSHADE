@@ -16,10 +16,13 @@ export function InfoSection() {
 
               <div className="space-y-2">
                 <p className="text-xl md:text-2xl text-amber-400 font-light tracking-wider">
-                  06:00 PM – UNTIL LATE
+                  6:00 PM – UNTIL LATE
                 </p>
                 <p className="text-sm md:text-base text-neutral-400 tracking-[0.2em] uppercase">
                   Tuesday – Sunday
+                </p>
+                <p className="text-sm md:text-base text-red-400 tracking-[0.2em] uppercase mt-2">
+                  Monday: Closed
                 </p>
               </div>
 
@@ -48,19 +51,27 @@ export function InfoSection() {
               </h2>
 
               <div className="space-y-2 font-light text-neutral-300 text-lg md:text-xl leading-relaxed">
-                <p>141 UR FLR2 THONG LOR 13 ALLEY,</p>
-                <p>KHLONG TAN NUEA, WATTHANA,</p>
-                <p>BANGKOK 10110</p>
+                <p>141, 2ND FLOOR,</p>
+                <p>UR THONGLOR 13 ALLEY,</p>
+                <p>KLONGTON-NUA WATTHANA,</p>
+                <p>BANGKOK, THAILAND 10110</p>
               </div>
 
-              <div className="pt-8">
+              <div className="pt-8 space-y-3">
                 <a
-                  href="https://www.google.com/maps?sca_esv=cc34ee859529854e&rlz=1C5CHFA_enTH1182TH1182&output=search&q=oxalis+bar&source=lnms&fbs=ADc_l-a5L-oxxunx5BQU92zbhUnmksqua1A-f08QnDrgMZy0s_yAFoB7a283VuWwXT6YphPDm52vPoyplbEhE-vCVD0Mw5y7HXbrua_DrXLknYUsyXz5TzkEQwfdqPyPPl42oWfIi67J6dvJYQqT793AWSg6D5o8YjL5JsNsgI6X9IjbkGivW6SjYLTtoXG7taIunf8XyBw6T8MoOEzg4RLO3Mp03dT1W3d1t6wQQ7SZB-UIfsoyPwAUhU1jfb9d-Y8k3kUJWN-pXOHz6K6qSGZk4jzZfddn6kRNGvGSkf-9xz0bb5kzii4&entry=mc&ved=1t:200715&ictx=111"
+                  href="https://maps.app.goo.gl/JyBvn3vDZ9Ayx9Ei9"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-block border border-amber-500/30 px-8 py-3 text-sm tracking-[0.2em] text-amber-400 hover:bg-amber-500/10 transition-colors duration-300 uppercase">
-
-                  Get Directions
+                  Ravenshade Location
+                </a>
+                <span className="block text-neutral-500 text-xs">or</span>
+                <a
+                  href="https://maps.app.goo.gl/j3GmVJfD8x4UStWq7"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block border border-amber-500/30 px-8 py-3 text-sm tracking-[0.2em] text-amber-400 hover:bg-amber-500/10 transition-colors duration-300 uppercase">
+                  Car Park
                 </a>
               </div>
             </div>

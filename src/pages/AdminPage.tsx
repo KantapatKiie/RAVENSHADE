@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import {
-  Calendar,
+  Calendar as CalendarIcon,
   Users,
   Clock,
   Phone,
@@ -65,10 +67,13 @@ export function AdminPage() {
     "reservations",
   );
 
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [monthlyReservations, setMonthlyReservations] = useState<Map<string, number>>(new Map());
+
   const [newAvailability, setNewAvailability] = useState({
     date: getTodayDate(),
     is_closed: false,
-    blocked_by: "" as "" | "private" | "group",
+    blocked_by: "" as "" | "private" | "closed",
     notes: "",
   });
 
@@ -121,6 +126,7 @@ export function AdminPage() {
       fetchReservations();
       fetchAvailability();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   const fetchReservations = async () => {
@@ -130,8 +136,10 @@ export function AdminPage() {
       // Handle both array and object response formats
       if (Array.isArray(data)) {
         setReservations(data);
+        calculateMonthlyReservations(data);
       } else if (data && Array.isArray(data.reservations)) {
         setReservations(data.reservations);
+        calculateMonthlyReservations(data.reservations);
       } else {
         setReservations([]);
       }
@@ -142,6 +150,18 @@ export function AdminPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Calculate reservation counts by date
+  const calculateMonthlyReservations = (reservations: Reservation[]) => {
+    const counts = new Map<string, number>();
+    reservations.forEach((res) => {
+      if (res.status !== 'cancelled') {
+        const dateStr = res.reservation_date.split('T')[0];
+        counts.set(dateStr, (counts.get(dateStr) || 0) + 1);
+      }
+    });
+    setMonthlyReservations(counts);
   };
 
   const fetchAvailability = async () => {
@@ -340,6 +360,134 @@ export function AdminPage() {
         {/* Reservations Tab */}
         {activeTab === "reservations" && (
           <div>
+            {/* Monthly Calendar View */}
+            <div className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-sm mb-6">
+              <h3 className="text-white font-medium mb-4">Monthly Reservations Calendar</h3>
+              <div className="calendar-container">
+                <style>
+                  {`
+                    .calendar-container .react-calendar {
+                      background: transparent;
+                      border: 1px solid rgba(251, 191, 36, 0.2);
+                      border-radius: 4px;
+                      width: 100%;
+                      font-family: inherit;
+                      color: white;
+                    }
+                    .calendar-container .react-calendar__navigation {
+                      background: rgba(251, 191, 36, 0.1);
+                      margin-bottom: 0;
+                    }
+                    .calendar-container .react-calendar__navigation button {
+                      color: rgb(251, 191, 36);
+                      min-width: 44px;
+                      background: none;
+                      font-size: 16px;
+                    }
+                    .calendar-container .react-calendar__navigation button:enabled:hover,
+                    .calendar-container .react-calendar__navigation button:enabled:focus {
+                      background-color: rgba(251, 191, 36, 0.2);
+                    }
+                    .calendar-container .react-calendar__month-view__weekdays {
+                      background: rgba(0, 0, 0, 0.2);
+                      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+                    }
+                    .calendar-container .react-calendar__month-view__weekdays__weekday {
+                      color: rgb(251, 191, 36);
+                      padding: 0.75rem;
+                      text-align: center;
+                    }
+                    .calendar-container .react-calendar__month-view__weekdays__weekday abbr {
+                      text-decoration: none;
+                      font-weight: 500;
+                    }
+                    .calendar-container .react-calendar__tile {
+                      background: transparent;
+                      color: rgb(212, 212, 212);
+                      padding: 1rem;
+                      position: relative;
+                      border: 1px solid rgba(64, 64, 64, 0.5);
+                    }
+                    .calendar-container .react-calendar__tile:enabled:hover,
+                    .calendar-container .react-calendar__tile:enabled:focus {
+                      background-color: rgba(251, 191, 36, 0.1);
+                      color: rgb(251, 191, 36);
+                    }
+                    .calendar-container .react-calendar__tile--now {
+                      background: rgba(251, 191, 36, 0.15);
+                      border-color: rgba(251, 191, 36, 0.4);
+                    }
+                    .calendar-container .react-calendar__tile--active {
+                      background: rgba(251, 191, 36, 0.25);
+                      color: white;
+                    }
+                    .calendar-container .react-calendar__tile--hasReservations {
+                      background: rgba(34, 197, 94, 0.15);
+                      border-color: rgba(34, 197, 94, 0.4);
+                    }
+                    .calendar-container .react-calendar__tile--hasReservations::after {
+                      content: attr(data-count);
+                      position: absolute;
+                      top: 2px;
+                      right: 4px;
+                      background: rgb(34, 197, 94);
+                      color: white;
+                      border-radius: 50%;
+                      width: 20px;
+                      height: 20px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 10px;
+                      font-weight: bold;
+                    }
+                    .calendar-container .react-calendar__month-view__days__day--weekend {
+                      color: rgb(251, 191, 36);
+                    }
+                    .calendar-container .react-calendar__month-view__days__day--neighboringMonth {
+                      color: rgb(115, 115, 115);
+                    }
+                    .calendar-container .react-calendar__tile--monday {
+                      background: rgba(239, 68, 68, 0.1);
+                      border-color: rgba(239, 68, 68, 0.3);
+                    }
+                  `}
+                </style>
+                <Calendar
+                  value={selectedMonth}
+                  onActiveStartDateChange={({ activeStartDate }) => {
+                    if (activeStartDate) setSelectedMonth(activeStartDate);
+                  }}
+                  tileClassName={({ date }) => {
+                    const dateStr = date.toISOString().split('T')[0];
+                    const count = monthlyReservations.get(dateStr);
+                    const classes = [];
+                    if (count && count > 0) classes.push('react-calendar__tile--hasReservations');
+                    if (date.getDay() === 1) classes.push('react-calendar__tile--monday');
+                    return classes.join(' ');
+                  }}
+                  tileContent={({ date }) => {
+                    const dateStr = date.toISOString().split('T')[0];
+                    const count = monthlyReservations.get(dateStr);
+                    return count && count > 0 ? <div data-count={count}></div> : null;
+                  }}
+                  onClickDay={(date) => {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    setFilterDate(`${year}-${month}-${day}`);
+                  }}
+                />
+              </div>
+              <p className="text-neutral-400 text-sm mt-4">
+                <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                Green badges indicate dates with reservations. Click a date to filter.
+                <br />
+                <span className="inline-block w-3 h-3 bg-red-500/30 rounded-full mr-2 mt-2"></span>
+                Red-tinted dates are Mondays (closed).
+              </p>
+            </div>
+
             {/* Filters */}
             <div className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-sm mb-6">
               <div className="flex items-center gap-2 mb-4">
@@ -412,7 +560,7 @@ export function AdminPage() {
               </div>
             ) : filteredReservations.length === 0 ? (
               <div className="text-center py-12 bg-neutral-900/50 border border-neutral-800 rounded-sm">
-                <Calendar className="w-12 h-12 text-neutral-600 mx-auto mb-4" />
+                <CalendarIcon className="w-12 h-12 text-neutral-600 mx-auto mb-4" />
                 <p className="text-neutral-400">No reservations found</p>
               </div>
             ) : (
@@ -458,7 +606,7 @@ export function AdminPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                           <div className="flex items-center gap-2 text-neutral-300">
-                            <Calendar className="w-4 h-4 text-amber-400" />
+                            <CalendarIcon className="w-4 h-4 text-amber-400" />
                             {new Date(
                               reservation.reservation_date,
                             ).toLocaleDateString("en-US", {
@@ -590,21 +738,28 @@ export function AdminPage() {
                       Block Type
                     </label>
                     <select
-                      value={newAvailability.blocked_by}
-                      onChange={(e) =>
-                        setNewAvailability({
-                          ...newAvailability,
-                          blocked_by: e.target.value as
-                            | ""
-                            | "private"
-                            | "group",
-                        })
-                      }
+                      value={newAvailability.is_closed ? "closed" : newAvailability.blocked_by}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === "closed") {
+                          setNewAvailability({
+                            ...newAvailability,
+                            is_closed: true,
+                            blocked_by: "",
+                          });
+                        } else {
+                          setNewAvailability({
+                            ...newAvailability,
+                            is_closed: false,
+                            blocked_by: value as "" | "private",
+                          });
+                        }
+                      }}
                       className="w-full bg-white/5 border border-amber-500/30 text-white p-2 rounded focus:border-amber-400 focus:outline-none"
                     >
                       <option value="">Available</option>
                       <option value="private">Private Event</option>
-                      <option value="group">Group Booking</option>
+                      <option value="closed">Closed</option>
                     </select>
                   </div>
                 </div>
@@ -625,27 +780,6 @@ export function AdminPage() {
                     className="w-full bg-white/5 border border-amber-500/30 text-white p-2 rounded focus:border-amber-400 focus:outline-none"
                     placeholder="Optional notes..."
                   />
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="is_closed"
-                    checked={newAvailability.is_closed}
-                    onChange={(e) =>
-                      setNewAvailability({
-                        ...newAvailability,
-                        is_closed: e.target.checked,
-                      })
-                    }
-                    className="w-4 h-4"
-                  />
-                  <label
-                    htmlFor="is_closed"
-                    className="text-neutral-300 text-sm"
-                  >
-                    Mark as closed (no bookings allowed)
-                  </label>
                 </div>
 
                 <button

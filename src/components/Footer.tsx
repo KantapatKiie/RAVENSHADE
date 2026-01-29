@@ -68,30 +68,30 @@ export function Footer() {
               <li className="flex items-start gap-2 text-neutral-400 text-sm">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-amber-400" />
                 <a
-                  href="https://www.google.com/maps?sca_esv=cc34ee859529854e&rlz=1C5CHFA_enTH1182TH1182&output=search&q=oxalis+bar&source=lnms&fbs=ADc_l-a5L-oxxunx5BQU92zbhUnmksqua1A-f08QnDrgMZy0s_yAFoB7a283VuWwXT6YphPDm52vPoyplbEhE-vCVD0Mw5y7HXbrua_DrXLknYUsyXz5TzkEQwfdqPyPPl42oWfIi67J6dvJYQqT793AWSg6D5o8YjL5JsNsgI6X9IjbkGivW6SjYLTtoXG7taIunf8XyBw6T8MoOEzg4RLO3Mp03dT1W3d1t6wQQ7SZB-UIfsoyPwAUhU1jfb9d-Y8k3kUJWN-pXOHz6K6qSGZk4jzZfddn6kRNGvGSkf-9xz0bb5kzii4&entry=mc&ved=1t:200715&ictx=111"
+                  href="https://maps.app.goo.gl/JyBvn3vDZ9Ayx9Ei9"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  714/6-7 Sukhumvit Rd, Klongtan, Klongtei, Bangkok 10110
+                  141, 2nd floor, UR Thonglor 13 alley, Klongton-Nua Watthana, Bangkok, Thailand, 10110
                 </a>
               </li>
               <li className="flex items-center gap-2 text-neutral-400 text-sm">
                 <Phone className="h-4 w-4 flex-shrink-0 text-amber-400" />
                 <a
-                  href="tel:+66948965465"
+                  href="tel:+66826954956"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  +66 94 896 5465
+                  082 695 4956
                 </a>
               </li>
               <li className="flex items-center gap-2 text-neutral-400 text-sm">
                 <Mail className="h-4 w-4 flex-shrink-0 text-amber-400" />
                 <a
-                  href="mailto:info@ravenshade.com"
+                  href="mailto:ravenshade.bkk@gmail.com"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  info@ravenshade.com
+                  ravenshade.bkk@gmail.com
                 </a>
               </li>
             </ul>
@@ -105,26 +105,26 @@ export function Footer() {
             <p className="text-neutral-400 text-sm mb-4">
               Tuesday - Sunday
               <br />
-              3:00 PM - 11:00 PM
+              6:00 PM - Until Late
               <br />
               <span className="text-red-400">Monday: Closed</span>
             </p>
             <div className="flex gap-3">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/ravenshade.thonglor/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 bg-neutral-900 rounded-lg hover:bg-amber-500 hover:text-neutral-950 transition-all duration-300"
+                className="p-2.5 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-lg hover:scale-110 transition-transform duration-300"
               >
-                <Instagram className="h-5 w-5" />
+                <Instagram className="h-5 w-5 text-white" />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/ravenshade.thonglor"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 bg-neutral-900 rounded-lg hover:bg-amber-500 hover:text-neutral-950 transition-all duration-300"
+                className="p-2.5 bg-[#1877F2] rounded-lg hover:scale-110 transition-transform duration-300"
               >
-                <Facebook className="h-5 w-5" />
+                <Facebook className="h-5 w-5 text-white" />
               </a>
             </div>
           </div>

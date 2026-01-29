@@ -110,6 +110,58 @@ export function AboutPage() {
           </div>
         </div>
 
+        {/* HOUSE POLICY Section */}
+        <div className="mb-24">
+          <h2 className="font-serif text-4xl md:text-5xl text-white mb-12 text-center">
+            House Policy
+          </h2>
+          <div className="bg-neutral-900/50 backdrop-blur-sm border border-amber-500/20 p-8 md:p-12 rounded-sm max-w-4xl mx-auto">
+            <div className="space-y-8 text-neutral-300 leading-relaxed">
+              {/* Dress Code */}
+              <div>
+                <h3 className="text-amber-400 text-xl font-serif mb-3">Dress Code: Smart Casual</h3>
+                <p className="mb-2">No slippers/flip-flops and no athletic wear.</p>
+                <p className="text-sm text-neutral-400 italic">
+                  RAVENSHADE reserves the right to decline entry or service if we feel attire is not appropriate for the venue.
+                </p>
+              </div>
+
+              {/* Conduct */}
+              <div>
+                <p className="mb-3">
+                  We welcome you to unwind and enjoy your evening. However, we kindly ask all guests to take responsibility for themselves and to respect our space and property.
+                </p>
+              </div>
+
+              {/* Cleaning Fee */}
+              <div className="bg-red-950/20 border border-red-500/20 p-6 rounded">
+                <p className="text-red-300">
+                  <strong className="text-red-400">Important:</strong> If cleaning is required due to vomiting within the premises, a <strong>3,000 THB cleaning fee</strong> will be added to your bill immediately. This fee is paid directly to the staff member responsible for the clean-up.
+                </p>
+                <p className="text-neutral-400 text-sm mt-2 italic">
+                  Thank you for your kind understanding.
+                </p>
+              </div>
+
+              {/* Contact Information */}
+              <div className="border-t border-neutral-800 pt-6 mt-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="text-amber-400 font-medium mb-3">Reservations</h4>
+                    <p className="text-sm">Line Official: <a href="https://line.me/R/ti/p/@ravenshade.bkk" className="text-amber-400 hover:underline">@ravenshade.bkk</a></p>
+                  </div>
+                  <div>
+                    <h4 className="text-amber-400 font-medium mb-3">Venue Hire / Private Event</h4>
+                    <p className="text-sm">Email: <a href="mailto:ravenshade.bkk@gmail.com" className="text-amber-400 hover:underline">ravenshade.bkk@gmail.com</a></p>
+                    <p className="text-sm">Line Official: <a href="https://line.me/R/ti/p/@ravenshade.bkk" className="text-amber-400 hover:underline">@ravenshade.bkk</a></p>
+                    <p className="text-sm">Tel: <a href="tel:+66826954956" className="text-amber-400 hover:underline">082-695-4956</a></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Location & Hours */}
         <div className="grid md:grid-cols-2 gap-12">
           <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 p-8 rounded-sm">
@@ -122,15 +174,15 @@ export function AboutPage() {
                   Location
                 </p>
                 <a
-                  href="https://www.google.com/maps?sca_esv=cc34ee859529854e&rlz=1C5CHFA_enTH1182TH1182&output=search&q=oxalis+bar&source=lnms&fbs=ADc_l-a5L-oxxunx5BQU92zbhUnmksqua1A-f08QnDrgMZy0s_yAFoB7a283VuWwXT6YphPDm52vPoyplbEhE-vCVD0Mw5y7HXbrua_DrXLknYUsyXz5TzkEQwfdqPyPPl42oWfIi67J6dvJYQqT793AWSg6D5o8YjL5JsNsgI6X9IjbkGivW6SjYLTtoXG7taIunf8XyBw6T8MoOEzg4RLO3Mp03dT1W3d1t6wQQ7SZB-UIfsoyPwAUhU1jfb9d-Y8k3kUJWN-pXOHz6K6qSGZk4jzZfddn6kRNGvGSkf-9xz0bb5kzii4&entry=mc&ved=1t:200715&ictx=111"
+                  href="https://maps.app.goo.gl/JyBvn3vDZ9Ayx9Ei9"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-amber-400 hover:underline text-white"
+                  className="text-white hover:text-amber-400 transition-colors"
                 >
                   <p className="text-lg">
-                    714/6-7 Sukhumvit Rd, Klongtan
+                    141, 2nd floor, UR Thonglor 13 alley
                     <br />
-                    Klongtei, Bangkok 10110
+                    Klongton-Nua Watthana, Bangkok 10110
                   </p>
                 </a>
               </div>
@@ -139,10 +191,10 @@ export function AboutPage() {
                   Phone
                 </p>
                 <a
-                  href="tel:+66948965465"
+                  href="tel:+66826954956"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  <p className="text-lg">+66 94 896 5465</p>
+                  <p className="text-lg">082 695 4956</p>
                 </a>
               </div>
             </div>
@@ -155,7 +207,7 @@ export function AboutPage() {
             <div className="space-y-3 text-neutral-300">
               <div className="flex justify-between items-center py-2 border-b border-neutral-800">
                 <span>Tuesday - Sunday</span>
-                <span className="text-amber-400">3:00 PM - 11:00 PM</span>
+                <span className="text-amber-400">6:00 PM - Until Late</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span>Monday</span>

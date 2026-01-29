@@ -482,24 +482,58 @@ export function ReservationSection() {
                         }
                         className="w-full bg-white/5 border-b border-amber-500/30 text-white p-3 focus:border-amber-400 focus:outline-none focus:bg-white/10 transition-all font-light appearance-none"
                       >
-                        <option className="bg-neutral-900" value="18:00:00">
-                          18:00
-                        </option>
-                        <option className="bg-neutral-900" value="19:00:00">
-                          19:00
-                        </option>
-                        <option className="bg-neutral-900" value="20:00:00">
-                          20:00
-                        </option>
-                        <option className="bg-neutral-900" value="21:00:00">
-                          21:00
-                        </option>
-                        <option className="bg-neutral-900" value="22:00:00">
-                          22:00
-                        </option>
-                        <option className="bg-neutral-900" value="23:00:00">
-                          23:00
-                        </option>
+                        {reservationType === "private" ? (
+                          <>
+                            <option className="bg-neutral-900" value="13:00:00">
+                              13:00 (Ends at 21:00)
+                            </option>
+                            <option className="bg-neutral-900" value="14:00:00">
+                              14:00 (Ends at 22:00 + 4,500 THB/hr)
+                            </option>
+                            <option className="bg-neutral-900" value="15:00:00">
+                              15:00 (Ends at 23:00 + 4,500 THB/hr)
+                            </option>
+                            <option className="bg-neutral-900" value="16:00:00">
+                              16:00 (Ends at 00:00 + 4,500 THB/hr)
+                            </option>
+                            <option className="bg-neutral-900" value="17:00:00">
+                              17:00 (Ends at 01:00 + 4,500 THB/hr)
+                            </option>
+                            <option className="bg-neutral-900" value="18:00:00">
+                              18:00 (Ends at 02:00)
+                            </option>
+                            <option className="bg-neutral-900" value="19:00:00">
+                              19:00 (Ends at 03:00 + 4,500 THB/hr)
+                            </option>
+                            <option className="bg-neutral-900" value="20:00:00">
+                              20:00 (Ends at 04:00 + 4,500 THB/hr)
+                            </option>
+                            <option className="bg-neutral-900" value="21:00:00">
+                              21:00 (Ends at 05:00 + 4,500 THB/hr)
+                            </option>
+                          </>
+                        ) : (
+                          <>
+                            <option className="bg-neutral-900" value="18:00:00">
+                              18:00
+                            </option>
+                            <option className="bg-neutral-900" value="19:00:00">
+                              19:00
+                            </option>
+                            <option className="bg-neutral-900" value="20:00:00">
+                              20:00
+                            </option>
+                            <option className="bg-neutral-900" value="21:00:00">
+                              21:00
+                            </option>
+                            <option className="bg-neutral-900" value="22:00:00">
+                              22:00
+                            </option>
+                            <option className="bg-neutral-900" value="23:00:00">
+                              23:00
+                            </option>
+                          </>
+                        )}
                       </select>
                     </div>
 
@@ -539,6 +573,27 @@ export function ReservationSection() {
                             </option>
                             <option className="bg-neutral-900" value="8">
                               8 People
+                            </option>
+                            <option className="bg-neutral-900" value="10">
+                              9-10 People
+                            </option>
+                            <option className="bg-neutral-900" value="15">
+                              11-15 People
+                            </option>
+                            <option className="bg-neutral-900" value="20">
+                              16-20 People
+                            </option>
+                            <option className="bg-neutral-900" value="25">
+                              21-25 People
+                            </option>
+                            <option className="bg-neutral-900" value="30">
+                              26-30 People
+                            </option>
+                            <option className="bg-neutral-900" value="35">
+                              31-35 People
+                            </option>
+                            <option className="bg-neutral-900" value="40">
+                              36-40 People
                             </option>
                           </>
                         )}
